@@ -47,11 +47,11 @@ i++;
 }//for
 n=1;
 for(p=args;*p!='\0';p++){
-for(j=0;j<i-1;j++){k*=10;}
+for(j=0;j<i-1;j++){k*=10;printf("%d\n",k);}
 n+=(*p-'0'+0)*k;
 }
 //calculate n
-printf("i=%d\nn=%d",i,n);
+printf("i=%d\nn=%d\n",i,n);
 //cpu_exec(n);
 return 0;
 }
