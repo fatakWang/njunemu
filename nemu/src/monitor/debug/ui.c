@@ -45,11 +45,11 @@ else {
 i++;
 }
 }//for
+n=1;
 for(p=args;*p!='\0';p++){
 for(j=0;j<i-1;j++){k*=10;}
 n+=(*p-'0'+0)*k;
 }
-if(i==0){n=1;}
 //calculate n
 cpu_exec(n);
 return 0;
