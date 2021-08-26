@@ -34,6 +34,10 @@ static int cmd_c(char *args) {
 
 static int cmd_si(char *args){
 //use args for argument
+if(args==NULL){
+cpu_exec(1);
+return 0;
+}
 char* p=args;
 int i=0,n=0,j=0,k=1;
 for( ;*p!='\0';p++){
