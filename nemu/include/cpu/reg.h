@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
-enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
-enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
+enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };//32 states
+enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };//16
+enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };//8
 
 /* TODO: Re-organize the `CPU_state' structure to match the register
  * encoding scheme in i386 instruction format. For example, if we
@@ -15,7 +15,8 @@ enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
  */
 
 typedef struct {
-     struct {
+     union{
+	union {
 		uint32_t _32;
 		uint16_t _16;
 		uint8_t _8[2];
@@ -23,8 +24,13 @@ typedef struct {
 
      /* Do NOT change the order of the GPRs' definitions. */
 
-     uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
+	struct{
+	uint32_t eax,ecx,edx,ebx,esp,ebp,esi,edi;
 
+	};
+
+	
+};
      swaddr_t eip;
      
      union {
