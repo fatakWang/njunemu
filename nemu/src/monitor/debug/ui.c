@@ -47,13 +47,13 @@ i++;
 }//for
 n=0;
 for(p=args;*p!='\0';p++){
-for(j=0,k=1;j<i-1;j++){k*=10;printf("%d\n",k);}
+for(j=0,k=1;j<i-1;j++){k*=10;}
 n+=(*p-'0'+0)*k;
 i--;
 }
 //calculate n
-printf("n=%d\n",n);
-//cpu_exec(n);
+
+cpu_exec(n);
 return 0;
 }
 
