@@ -65,6 +65,24 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_info(char *args){
+if(*args=='r'){
+printf("eax=  %08x\n",cpu.eax);
+printf("ecx=  %08x\n",cpu.ecx);
+printf("edx=  %08x\n",cpu.edx);
+printf("ebx=  %08x\n",cpu.ebx);
+printf("esp=  %08x\n",cpu.esp);
+printf("ebp=  %08x\n",cpu.ebp);
+printf("esi=  %08x\n",cpu.esi);
+printf("edi=  %08x\n",cpu.edi);
+}
+
+return 0;
+}
+
+
+
+
 static int cmd_help(char *args);
 
 static struct {
@@ -75,7 +93,8 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-	{"si","execute the program step by step or execute it as you will",cmd_si}
+	{"si","execute the program step by step or execute it as you will",cmd_si},
+	{"info","printf the register's status",cmd_info},
 	/* TODO: Add more commands */
 
 };
