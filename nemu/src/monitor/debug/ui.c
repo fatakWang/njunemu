@@ -45,7 +45,7 @@ else {
 i++;
 }
 }//for
-n=1;
+n=0;
 for(p=args;*p!='\0';p++){
 for(j=0,k=1;j<i-1;j++){k*=10;printf("%d\n",k);}
 n+=(*p-'0'+0)*k;
