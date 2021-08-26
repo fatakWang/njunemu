@@ -38,7 +38,7 @@ char* p=args;
 int i=0,n=0,j=0,k=1;
 for( ;*p!='\0';p++){
 if(*p<'0'||*p>'9'){
-printf("please enter a vaild number");
+printf("please enter a vaild number\n");
 return 0;
 }//if
 else {
@@ -51,7 +51,8 @@ for(j=0;j<i-1;j++){k*=10;}
 n+=(*p-'0'+0)*k;
 }
 //calculate n
-cpu_exec(n);
+printf("i=%d\nn=%d",i,n);
+//cpu_exec(n);
 return 0;
 }
 
