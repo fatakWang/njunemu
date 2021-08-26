@@ -32,6 +32,29 @@ static int cmd_c(char *args) {
 	return 0;
 }
 
+static int cmd_si(char *args){
+//use args for argument
+char* p=args;
+int i=0,n=0,j=0,k=1;
+for( ;*p!='\0';p++){
+if(*p<'0'||*p>'9'){
+printf("please enter a vaild number");
+return 0;
+}//if
+else {
+i++;
+}
+}//for
+for(p=args;*p!='\0';p++){
+for(j=0;j<i-1;j++){k*=10;}
+n+=(*p-'0'+0)*k;
+}
+if(i==0){n=1;}
+//calculate n
+cpu_exec(n);
+return 0;
+}
+
 static int cmd_q(char *args) {
 	return -1;
 }
@@ -46,7 +69,7 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-
+	{"si","execute the program step by step or execute it as you will",cmd_si}
 	/* TODO: Add more commands */
 
 };
