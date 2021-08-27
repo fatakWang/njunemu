@@ -112,7 +112,7 @@ return 0;
 
 int i2=0;
 for(i2=0;i2<n1;i2++){
-printf("%08x : %08x\n",n2,swaddr_read(n2,4));
+printf("%06x :  0x%08x\n",n2,swaddr_read(n2,4));
 n2+=4;
 }
 
