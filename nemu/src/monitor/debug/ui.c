@@ -110,13 +110,13 @@ return 0;
 printf("%d\n",n1);
 printf("%u\n",n2);
 //calculate the second argument as ni2
-/*
+
 int i2=0;
 for(i2=0;i2<n1;i2++){
 printf("%s : %u\n",p,swaddr_read(n2,4));
 n2+=4;
 }
-*/
+
 return 0;
 
 }
