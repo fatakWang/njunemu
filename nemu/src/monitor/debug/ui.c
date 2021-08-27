@@ -113,7 +113,7 @@ printf("%u\n",n2);
 
 int i2=0;
 for(i2=0;i2<n1;i2++){
-printf("%s : %u\n",p,swaddr_read(n2,4));
+printf("%s : %08x\n",p,swaddr_read(n2,4));
 n2+=4;
 }
 
