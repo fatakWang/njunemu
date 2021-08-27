@@ -99,35 +99,28 @@ n1+=(*p-'0'+0)*k;
 i--;
 }
 //calculate the first argument as n1
-p++;
-if(*(p++)!='0'){
-printf("please enter a hexadecimal number\n");
-return 0;
-}
-else{
-if(*p!='x'||*p!='X'){
-printf("please enter a hexadecimal number\n");
-return 0;
-}
-else{
-p++;
-}
-}//text the second argument start as 0x
-p-=2;
-char *endptr;
-uint32_t n2=strtoul(p,&endptr,16);
+
+//text the second argument start as 0x
+//char *endptr;
+/*uint32_t n2=strtoul(p1,&endptr,16);
 if(endptr!=NULL){
 printf("please enter a vaild argument\n");
 return 0;
-}
+}*/
+printf("%d\n",n1);
+printf("%s\n",p);
 //calculate the second argument as ni2
+/*
 int i2=0;
 for(i2=0;i2<n1;i2++){
 printf("%s : %u\n",p,swaddr_read(n2,4));
 n2+=4;
 }
+*/
 return 0;
+
 }
+
 
 
 
