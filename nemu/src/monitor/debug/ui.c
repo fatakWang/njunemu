@@ -102,7 +102,7 @@ i--;
 
 //text the second argument start as 0x
 char *endptr;
-uint32_t n2=strtoul(p,&endptr,16);
+uint32_t n2=strtoul(++p,&endptr,16);
 if(endptr!=NULL){
 printf("please enter a vaild argument\n");
 return 0;
