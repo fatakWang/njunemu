@@ -2,7 +2,7 @@
 #include "monitor/expr.h"
 #include "monitor/watchpoint.h"
 #include "nemu.h"
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -80,6 +80,54 @@ printf("edi=  %08x\n",cpu.edi);
 return 0;
 }
 
+static int cmd_x(char *args){
+char* p=args;
+int i=0;
+for( ;*p!=' ';p++){
+if(*p<'0'||*p>'9'){
+printf("please enter a vaild argument\n");
+return 0;
+}//if
+else {
+i++;
+}
+}//for
+int n1=0,j=0,k=0;
+for(p=args;*p!=' ';p++){
+for(j=0,k=1;j<i-1;j++){k*=10;}
+n1+=(*p-'0'+0)*k;
+i--;
+}
+//calculate the first argument as n1
+p++;
+if(*(p++)!='0'){
+printf("please enter a hexadecimal number\n");
+return 0;
+}
+else{
+if(*p!='x'||*p!='X'){
+printf("please enter a hexadecimal number\n");
+return 0;
+}
+else{
+p++;
+}
+}//text the second argument start as 0x
+p-=2;
+char *endptr;
+uint32_t n2=strtoul(p,&endptr,16);
+if(endptr!=NULL){
+printf("please enter a vaild argument\n");
+return 0;
+}
+//calculate the second argument as ni2
+int i2=0;
+for(i2=0;i2<n1;i2++){
+printf("%s : %u\n",p,swaddr_read(n2,4));
+n2+=4;
+}
+return 0;
+}
 
 
 
@@ -95,6 +143,8 @@ static struct {
 	{ "q", "Exit NEMU", cmd_q },
 	{"si","execute the program step by step or execute it as you will",cmd_si},
 	{"info","printf the register's status",cmd_info},
+	{"x","printf the memory's status",cmd_x},
+
 	/* TODO: Add more commands */
 
 };
