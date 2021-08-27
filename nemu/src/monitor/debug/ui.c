@@ -107,13 +107,12 @@ uint32_t n2=strtoul(++p,&endptr,16);
 printf("please enter a vaild argument\n");
 return 0;
 }*/
-printf("%d\n",n1);
-printf("%u\n",n2);
-//calculate the second argument as ni2
+//calculate the second ar
+
 
 int i2=0;
 for(i2=0;i2<n1;i2++){
-printf("%s : %08x\n",p,swaddr_read(n2,4));
+printf("%08x : %08x\n",n2,swaddr_read(n2,4));
 n2+=4;
 }
 
