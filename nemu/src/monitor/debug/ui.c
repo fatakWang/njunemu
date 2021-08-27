@@ -103,10 +103,10 @@ i--;
 //text the second argument start as 0x
 char *endptr;
 uint32_t n2=strtoul(++p,&endptr,16);
-if(endptr!=NULL){
+/*if(endptr!=NULL){
 printf("please enter a vaild argument\n");
 return 0;
-}
+}*/
 printf("%d\n",n1);
 printf("%u\n",n2);
 //calculate the second argument as ni2
