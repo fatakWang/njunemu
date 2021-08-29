@@ -100,18 +100,11 @@ assert(0);}
 
 				switch(rules[i].token_type) {
 case NOTYPE:break;					
-default:tokens[nr_token].type=rules[i].token_type;		
+default:
+if(nr_token>32){printf("the expression have too much token\n");assert(0);}
+tokens[nr_token].type=rules[i].token_type;		
 strncpy(tokens[nr_token].str,substr_start,substr_len+1);			
-nr_token++;break;
-				
-
-
-
-
-
-
-				
-				
+nr_token++;break;		
 				}
 
 				break;
