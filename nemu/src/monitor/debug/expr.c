@@ -1,4 +1,5 @@
 #include "nemu.h"
+#include<stdio.h>
 #include<string.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -16,31 +17,28 @@ enum {
 static struct rule {
 	char *regex;
 	int token_type;
+	int priority;
 } rules[] = {
 
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{" +",	NOTYPE},				// spaces
-	{"\\+", PLUS},					// plus
-	{"==", EQ},					// equal
-	{"\\$[a-z]{2,3}",REG},
-	{"[0-9]+",DECNUM},
-	{"0(x|X)[0-9a-f]+",HEXNUM},
-	{"!=",NOTEQ},
-	{"&&",AND},
-	{"\\|\\|",OR},
-	{"!",'!'},
-	{">",'>'},
-	{"<",'<'},
-	{">=",BIGEQ},
-	{"<=",SMAEQ},
-	{"\\(",'('},
-	{"\\)",')'},	
-	{"-",'-'},
-	{"\\*",'*'},
-	{"/",'/'}
+	{" +",	NOTYPE,0},				// spaces
+	{"\\+", PLUS,4},				// plus
+	{"==", EQ,3},					// equal
+	{"\\$[a-z]{2,3}",REG,8},
+	{"[0-9]+",DECNUM,8},
+	{"0(x|X)[0-9a-f]+",HEXNUM,8},
+	{"!=",NOTEQ,3},
+	{"&&",AND,2},
+	{"\\|\\|",OR,1},
+	{"!",'!',6},
+	{"\\(",'(',7},
+	{"\\)",')',7},	
+	{"-",'-',4},
+	{"\\*",'*',5},
+	{"/",'/',5}
 	
 
 };
@@ -68,6 +66,7 @@ void init_regex() {
 
 typedef struct token {
 	int type;
+	int priority;
 	char str[32];
 } Token;
 
@@ -103,8 +102,10 @@ case NOTYPE:break;
 default:
 if(nr_token>32){printf("the expression have too much token\n");assert(0);}
 tokens[nr_token].type=rules[i].token_type;		
-strncpy(tokens[nr_token].str,substr_start,substr_len+1);			
-nr_token++;break;		
+strncpy(tokens[nr_token].str,substr_start,substr_len+2);			
+tokens[nr_token].priority=rules[i].priority;
+nr_token++;
+break;		
 				}
 
 				break;
@@ -119,6 +120,84 @@ nr_token++;break;
 
 	return true; 
 }
+
+bool check_parenttheses(int p,int q){
+int i=0,j=0;
+bool result=true;
+for(i=p;i<q;i++){
+if(tokens[i].type=='('){
+j++;
+}
+else if(tokens[i].type==')'){
+j--;
+}
+if(j==0)result=false;
+if(j<0){
+printf("the ( cannot match ),check it out\n");
+assert(0);
+}
+}
+if(tokens[i].type=='('){
+j++;
+}
+else if(tokens[i].type==')'){
+j--;
+}
+if(j==0&&result!=false)result=true;
+else if(j!=0){
+printf("the ( cannot match ),check it out\n");
+assert(0);
+}
+else{
+}
+return result;
+}//THE TECHNIC SMILIAR TO STACK
+
+int findDomi(int p,int q){
+int i=p,minPrior=8,j=p;
+for(i=p;i<=q;i++){
+if(tokens[i].type=='('){
+for(;tokens[i].type!=')';i++);
+i++;
+}
+if(minPrior>=tokens[i].priority){
+minPrior=tokens[i].priority;
+j=i;
+}
+}
+return j;
+}
+
+uint32_t eval(int p,int q){
+if(p>q){
+assert(0);
+}
+else if(p==q){
+unsigned int	returnNUM;
+switch(tokens[p].type){
+case DECNUM:sscanf(tokens[p].str,"%u",&returnNUM);return returnNUM;
+case HEXNUM:sscanf(tokens[p].str,"%x",&returnNUM);return returnNUM;
+}
+}
+else if(check_parenttheses(p,q)==true){
+return eval(p+1,q-1);
+}
+else{
+int op=findDomi(p,q);
+uint32_t val1=eval(p,op-1);
+uint32_t val2=eval(op+1,q);
+switch(tokens[op].type){
+case PLUS:return val1+val2;break;
+case '-':return val1-val2;break;
+case '*':return val1*val2;break;
+case '/':return val1/val2;break;
+} 
+}
+return 0;
+}
+
+
+
 
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
