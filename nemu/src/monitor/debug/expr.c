@@ -29,7 +29,7 @@ static struct rule {
 	{"==", EQ,3},					// equal
 	{"\\$[a-z]{2,3}",REG,8},
 	{"[0-9]+",DECNUM,8},
-	{"0(x|X)[0-9a-f]+",HEXNUM,8},
+	{"0(x|X)[0-9a-fA-F]+",HEXNUM,8},
 	{"!=",NOTEQ,3},
 	{"&&",AND,2},
 	{"\\|\\|",OR,1},
@@ -170,14 +170,35 @@ return j;
 
 uint32_t eval(int p,int q){
 if(p>q){
-
 assert(0);
 }
 else if(p==q){
 unsigned int	returnNUM;
+int i=0;
 switch(tokens[p].type){
 case DECNUM:sscanf(tokens[p].str,"%u",&returnNUM);return returnNUM;
 case HEXNUM:sscanf(tokens[p].str,"%x",&returnNUM);return returnNUM;
+case '!':sscanf(tokens[p+1].str,"%u",&returnNUM);return !returnNUM;
+case REG:
+for(i=0;i<8;i++){
+if(strcmp(tokens[p].str+1,regsl[i])==0){
+return reg_l(i); 
+}
+}
+for(i=0;i<8;i++){
+if(strcmp(tokens[p].str+1,regsw[i])==0){
+return reg_w(i); 
+}
+}
+for(i=0;i<8;i++){
+if(strcmp(tokens[p].str+1,regsb[i])==0){
+return reg_b(i); 
+}
+}
+break;
+printf("please enter the right REGISTERNAME\n");
+assert(0);
+break;
 }
 }
 else if(check_parenttheses(p,q)==true){
@@ -188,10 +209,14 @@ int op=findDomi(p,q);
 uint32_t val1=eval(p,op-1);
 uint32_t val2=eval(op+1,q);
 switch(tokens[op].type){
-case PLUS:return val1+val2;break;
-case '-':return val1-val2;break;
-case '*':return val1*val2;break;
-case '/':return val1/val2;break;
+case PLUS:return val1+val2;
+case '-':return val1-val2;
+case '*':return val1*val2;
+case '/':return val1/val2;
+case EQ:return val1==val2;
+case NOTEQ:return val1!=val2;
+case AND:return val1&&val2;
+case OR:return val1||val2;
 } 
 }
 return 0;
