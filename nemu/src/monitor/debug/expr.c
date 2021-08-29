@@ -170,6 +170,7 @@ return j;
 
 uint32_t eval(int p,int q){
 if(p>q){
+
 assert(0);
 }
 else if(p==q){
@@ -195,9 +196,6 @@ case '/':return val1/val2;break;
 }
 return 0;
 }
-
-
-
 
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
