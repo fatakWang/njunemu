@@ -1,5 +1,5 @@
 #include "nemu.h"
-
+#include<string.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -7,8 +7,8 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ
-
+	NOTYPE = 256, EQ,PLUS,REG,DECNUM,HEXNUM,NOTEQ,
+	AND,OR,BIGEQ,SMAEQ
 	/* TODO: Add more token types */
 
 };
@@ -23,8 +23,26 @@ static struct rule {
 	 */
 
 	{" +",	NOTYPE},				// spaces
-	{"\\+", '+'},					// plus
-	{"==", EQ}						// equal
+	{"\\+", PLUS},					// plus
+	{"==", EQ},					// equal
+	{"\\$[a-z]{2,3}",REG},
+	{"[0-9]+",DECNUM},
+	{"0(x|X)[0-9a-f]+",HEXNUM},
+	{"!=",NOTEQ},
+	{"&&",AND},
+	{"\\|\\|",OR},
+	{"!",'!'},
+	{">",'>'},
+	{"<",'<'},
+	{">=",BIGEQ},
+	{"<=",SMAEQ},
+	{"\\(",'('},
+	{"\\)",')'},	
+	{"-",'-'},
+	{"\\*",'*'},
+	{"/",'/'}
+	
+
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -69,7 +87,9 @@ static bool make_token(char *e) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
-
+				if(substr_len>32){
+printf("the token is larger than 32\n");
+assert(0);}
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				position += substr_len;
 
@@ -79,7 +99,19 @@ static bool make_token(char *e) {
 				 */
 
 				switch(rules[i].token_type) {
-					default: panic("please implement me");
+case NOTYPE:break;					
+default:tokens[nr_token].type=rules[i].token_type;		
+strncpy(tokens[nr_token].str,substr_start,substr_len+1);			
+nr_token++;break;
+				
+
+
+
+
+
+
+				
+				
 				}
 
 				break;
