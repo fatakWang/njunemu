@@ -9,7 +9,7 @@
 
 enum {
 	NOTYPE = 256, EQ,PLUS,REG,DECNUM,HEXNUM,NOTEQ,
-	AND,OR,BIGEQ,SMAEQ
+	AND,OR,BIGEQ,SMAEQ,DEREF,NEGATIVE
 	/* TODO: Add more token types */
 
 };
@@ -38,9 +38,9 @@ static struct rule {
 	{"\\)",')',7},	
 	{"-",'-',4},
 	{"\\*",'*',5},
-	{"/",'/',5}
-	
-
+	{"/",'/',5},	
+	{"@",DEREF,6},
+	{"`",NEGATIVE,6}//@ and ` means the DEREF AND NEGATIVE wouldn't be declared
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -176,9 +176,9 @@ else if(p==q){
 unsigned int	returnNUM;
 int i=0;
 switch(tokens[p].type){
-case DECNUM:sscanf(tokens[p].str,"%u",&returnNUM);return returnNUM;
+case DECNUM:sscanf(tokens[p].str,"%d",&returnNUM);return returnNUM;
 case HEXNUM:sscanf(tokens[p].str,"%x",&returnNUM);return returnNUM;
-case '!':sscanf(tokens[p+1].str,"%u",&returnNUM);return !returnNUM;
+case '!':sscanf(tokens[p+1].str,"%d",&returnNUM);return !returnNUM;
 case REG:
 for(i=0;i<8;i++){
 if(strcmp(tokens[p].str+1,regsl[i])==0){
@@ -229,7 +229,19 @@ uint32_t expr(char *e, bool *success) {
 	}
 
 	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
+int i=0;
+for(i=0;i<nr_token;i++){
+if(tokens[i].type=='*'&&(i==0||(tokens[i-1].type!=DECNUM&&
+tokens[i-1].type!=HEXNUM&&tokens[i-1].type!=REG))){
+tokens[i].type=DEREF;
+}
+}
+for(i=0;i<nr_token;i++){
+if(tokens[i].type=='-'&&(i==0||(tokens[i-1].type!=DECNUM&&
+tokens[i-1].type!=HEXNUM&&tokens[i-1].type!=REG))){
+tokens[i].type=NEGATIVE;
+}
+}
 	return 0;
 }
 
