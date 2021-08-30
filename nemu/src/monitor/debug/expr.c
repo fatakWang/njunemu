@@ -176,9 +176,8 @@ else if(p==q){
 unsigned int	returnNUM;
 int i=0;
 switch(tokens[p].type){
-case DECNUM:sscanf(tokens[p].str,"%d",&returnNUM);return returnNUM;
-case HEXNUM:sscanf(tokens[p].str,"%x",&returnNUM);return returnNUM;
-case '!':sscanf(tokens[p+1].str,"%d",&returnNUM);return !returnNUM;
+case DECNUM:sscanf(tokens[p].str,"%d",&returnNUM);return returnNUM;break;
+case HEXNUM:sscanf(tokens[p].str,"%x",&returnNUM);return returnNUM;break;
 case REG:
 for(i=0;i<8;i++){
 if(strcmp(tokens[p].str+1,regsl[i])==0){
@@ -196,7 +195,8 @@ return reg_b(i);
 }
 }
 break;
-printf("please enter the right REGISTERNAME\n");
+default:
+printf("please enter the right expression\n");
 assert(0);
 break;
 }
@@ -205,20 +205,66 @@ else if(check_parenttheses(p,q)==true){
 return eval(p+1,q-1);
 }
 else{
+uint32_t returnNUM=0;
 int op=findDomi(p,q);
+if(tokens[p].type=='!'||tokens[p].type==DEREF||tokens[p].type==NEGATIVE){
+if(tokens[p+1].type=='('||tokens[p+1].type=='!'||tokens[p+1].type==DEREF||tokens[p+1].type==NEGATIVE){
+returnNUM=eval(p+1,q);
+switch(tokens[p].type){
+case '!':return !returnNUM;break;
+case NEGATIVE:return -returnNUM;break;
+case DEREF:return swaddr_read(returnNUM,4);break;
+}//switch
+}//if p+1
+else if(tokens[p+1].type==DECNUM||tokens[p+1].type==HEXNUM||tokens[p+1].type==REG){
+if(p+1==q){
+returnNUM=eval(p+1,q);
+switch(tokens[p].type){
+case '!':return !returnNUM;break;
+case NEGATIVE:return -returnNUM;break;
+case DEREF:return swaddr_read(returnNUM,4);break;
+}//switch
+}//if p+1==q
+else{
+if(p+3>q){
+printf("please enter a right expression\n");
+assert(0);
+}
+switch(tokens[p+2].type){
+case PLUS:return eval(p,p+1)+eval(p+3,q);break;
+case '-':return eval(p,p+1)-eval(p+3,q);break;
+case '*':return eval(p,p+1)*eval(p+3,q);break;
+case '/':return eval(p,p+1)/eval(p+3,q);break;
+case EQ:return eval(p,p+1)==eval(p+3,q);break;
+case NOTEQ:return eval(p,p+1)!=eval(p+3,q);break;
+case AND:return eval(p,p+1)&&eval(p+3,q);break;
+case OR:return eval(p,p+1)||eval(p+3,q);break;
+default:printf("please enter a right expression");
+assert(0);
+}//switch p+2
+}//p+1!=q
+}//elseif p+1
+else{
+printf("please enter a right expression\n");
+assert(0);
+}//else p+1
+}//sma if
+
+else{
 uint32_t val1=eval(p,op-1);
 uint32_t val2=eval(op+1,q);
 switch(tokens[op].type){
-case PLUS:return val1+val2;
-case '-':return val1-val2;
-case '*':return val1*val2;
-case '/':return val1/val2;
-case EQ:return val1==val2;
-case NOTEQ:return val1!=val2;
-case AND:return val1&&val2;
-case OR:return val1||val2;
-} 
-}
+case PLUS:return val1+val2;break;
+case '-':return val1-val2;break;
+case '*':return val1*val2;break;
+case '/':return val1/val2;break;
+case EQ:return val1==val2;break;
+case NOTEQ:return val1!=val2;break;
+case AND:return val1&&val2;break;
+case OR:return val1||val2;break;
+}//switch 
+}//sma else
+}//big else
 return 0;
 }
 
