@@ -288,6 +288,6 @@ tokens[i-1].type!=HEXNUM&&tokens[i-1].type!=REG))){
 tokens[i].type=NEGATIVE;
 }
 }
-	return 0;
+	return eval(0,nr_token-1);
 }
 
